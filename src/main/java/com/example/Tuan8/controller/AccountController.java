@@ -1,11 +1,14 @@
 package com.example.Tuan8.controller;
 
 import com.example.Tuan8.dto.LoginDTO;
+import com.example.Tuan8.exception.ErrorResponse;
 import com.example.Tuan8.service.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +33,13 @@ public class AccountController {
             return ResponseEntity.ok(
                     "login:" + token
             );
-        } catch (Exception e) {
+        }
+        catch (BadCredentialsException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                    new ErrorResponse(HttpStatus.FORBIDDEN.value(), "username or password is incorrect")
+            );
+        }
+        catch (Exception e) {
             e.getStackTrace();
             throw new RuntimeException(e);
         }

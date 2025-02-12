@@ -5,6 +5,8 @@ import com.example.Tuan8.model.Role;
 import com.example.Tuan8.model.User;
 import com.example.Tuan8.repository.RoleRepo;
 import com.example.Tuan8.repository.UserRepo;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
@@ -41,13 +43,15 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public void addUser(@RequestBody UserDTO userDTO) {
+    public void addUser(@Valid @RequestBody UserDTO userDTO) {
         User newUser = new User();
         newUser.setFullName(userDTO.getFullName());
         newUser.setUsername(userDTO.getUsername());
         newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         newUser.setEmail(userDTO.getEmail());
-        Role role = roleRepo.findById(userDTO.getRoleId()).orElse(null);
+        Role role = roleRepo.findById(userDTO.getRoleId()).orElseThrow(
+                ()-> new EntityNotFoundException("role not found")
+        );
         newUser.setRole(role);
         userRepo.save(newUser);
     }

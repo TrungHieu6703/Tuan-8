@@ -34,4 +34,6 @@ public class RoleController {
     public Role addRole(@RequestBody Role role) {
         return roleRepo.save(role);
     }
+
+
 }

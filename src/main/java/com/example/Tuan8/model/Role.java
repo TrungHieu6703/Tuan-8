@@ -14,7 +14,7 @@ public class Role {
 
     @Column(nullable = false, unique = true)
     @NotBlank(message = "Role name cannot be blank")
-    private String role_name;
+    private String roleName;
 
     @OneToMany(mappedBy = "role")
     private Set<User> users;
@@ -27,7 +27,7 @@ public class Role {
 
     public Role(int id, String role_name) {
         this.id = id;
-        this.role_name = role_name;
+        this.roleName = role_name;
     }
 
     public Role(Object o, String roleAdmin, Object o1) {
@@ -42,18 +42,18 @@ public class Role {
     }
 
     public String getRole_name() {
-        return role_name;
+        return roleName;
     }
 
     public void setRole_name(String role_name) {
-        this.role_name = role_name;
+        this.roleName = role_name;
     }
 
     @Override
     public String toString() {
         return "Role{" +
                 "id=" + id +
-                ", role_name='" + role_name + '\'' +
+                ", role_name='" + roleName + '\'' +
                 ", users=" + users +
                 ", role_permissions=" + role_permissions +
                 '}';

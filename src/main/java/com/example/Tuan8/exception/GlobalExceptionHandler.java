@@ -2,39 +2,63 @@ package com.example.Tuan8.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ErrorResponse handleBlank(ConstraintViolationException e){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getConstraintViolations().iterator().next().getMessage());
     }
+//    @ExceptionHandler(BadCredentialsException.class)
+//    public ErrorResponse handleBadCredentials(BadCredentialsException e){
+//        return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+//    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorResponse handleEntityNotFound(EntityNotFoundException e){
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
     }
 
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException e){
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "require [UPDATE, DELETE, CREATE, READ]");
+    public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        String message = e.getMostSpecificCause().getMessage();
+        // Trường role_id nhập String
+        if (message.contains("not a valid `int` value")) {
+            return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Invalid number format: Expected an integer!");
+        }
+        // Nhập giá trị không phải giá trị của enum
+        else if (message.contains("[UPDATE, DELETE, CREATE, READ]")) {
+            return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Invalid permission! Accepted values: [UPDATE, DELETE, CREATE, READ]");
+        }
+
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Malformed JSON request!");
     }
+
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException e) {
-        String message = e.getMostSpecificCause().getMessage(); // Lấy lỗi SQL gốc
+        String message = e.getMostSpecificCause().getMessage();
+        // Nhập trùng role
         if (message.contains("role.UKiubw515ff0ugtm28p8g3myt0h")) {
             return new ErrorResponse(HttpStatus.CONFLICT.value(), "role name already exists!");
-        }else if (message.contains("role_permission.UK4v9rc4dhd2u79uyr9grgnx07m")){
+        }
+        // Nhập trùng permission
+        else if (message.contains("role_permission.UK4v9rc4dhd2u79uyr9grgnx07m")){
             return new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), "role already has this permission!");
         }
-        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
 
