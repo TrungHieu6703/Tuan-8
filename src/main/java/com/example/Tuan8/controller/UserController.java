@@ -85,7 +85,7 @@ public class UserController {
 
         assert role != null;
 
-        String role_name = role.getRole_name();
+        String role_name = role.getRoleName();
 
         if(isAdmin()) {
             return ResponseEntity.ok(userRepo.save(user));

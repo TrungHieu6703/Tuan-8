@@ -3,6 +3,7 @@ package com.example.Tuan8.controller;
 import com.example.Tuan8.model.Role;
 import com.example.Tuan8.repository.RoleRepo;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +36,16 @@ public class RoleController {
         return roleRepo.save(role);
     }
 
+    @PutMapping("/")
+    public Role updateRole(@Valid @RequestBody Role data) {
+        Role role = roleRepo.findById(data.getId()).orElseThrow(
+                () -> new EntityNotFoundException("Role not found with id " + data.getId())
+        );
+        if (data.getRoleName() != null) {
+            role.setRoleName(data.getRoleName());
+            role = roleRepo.save(role);
+        }
+        return role;
+    }
 
 }

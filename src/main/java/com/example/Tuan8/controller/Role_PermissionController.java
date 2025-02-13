@@ -7,6 +7,8 @@ import com.example.Tuan8.repository.RoleRepo;
 import com.example.Tuan8.repository.Role_PermissionRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
@@ -33,4 +35,12 @@ public class Role_PermissionController {
         return  ResponseEntity.ok(role_permissionRepo.save(rolePermission));
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteRole_Permission(@PathVariable int id){
+        Role_Permission rolePermission = role_permissionRepo.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException("Role_Permission not found")
+        );
+        role_permissionRepo.delete(rolePermission);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("delete successfully");
+    }
 }

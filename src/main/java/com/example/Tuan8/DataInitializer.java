@@ -30,7 +30,7 @@ public class DataInitializer {
     public void init() {
         if (roleRepository.findByRoleName("ROLE_ADMIN").isEmpty()) {
             Role adminRole = new Role();
-            adminRole.setRole_name("ROLE_ADMIN");
+            adminRole.setRoleName("ROLE_ADMIN");
             roleRepository.save(adminRole);
             Set<PermissionEnum> permissions = Set.of(
                     PermissionEnum.CREATE,
@@ -53,7 +53,7 @@ public class DataInitializer {
             adminUser.setRole(adminRole);
             userRepository.save(adminUser);
 
-            System.out.println("✅ ROLE_ADMIN và Admin User đã được tạo thành công!");
+            System.out.println("✅ username: admin && password: admin123");
         }
     }
 }

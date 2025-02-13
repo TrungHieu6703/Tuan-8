@@ -22,15 +22,13 @@ public class Role {
     @OneToMany(mappedBy = "role")
     private Set<Role_Permission> role_permissions;
 
+
     public Role() {
     }
 
-    public Role(int id, String role_name) {
+    public Role(String roleName, int id) {
+        this.roleName = roleName;
         this.id = id;
-        this.roleName = role_name;
-    }
-
-    public Role(Object o, String roleAdmin, Object o1) {
     }
 
     public int getId() {
@@ -41,21 +39,11 @@ public class Role {
         this.id = id;
     }
 
-    public String getRole_name() {
+    public @NotBlank(message = "Role name cannot be blank") String getRoleName() {
         return roleName;
     }
 
-    public void setRole_name(String role_name) {
-        this.roleName = role_name;
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", role_name='" + roleName + '\'' +
-                ", users=" + users +
-                ", role_permissions=" + role_permissions +
-                '}';
+    public void setRoleName(@NotBlank(message = "Role name cannot be blank") String roleName) {
+        this.roleName = roleName;
     }
 }
