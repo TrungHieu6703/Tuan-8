@@ -2,7 +2,6 @@ package com.example.Tuan8.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class UserDTO {
     @NotBlank(message = "fullName must be not null")

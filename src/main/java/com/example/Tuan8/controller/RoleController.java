@@ -1,51 +1,46 @@
 package com.example.Tuan8.controller;
 
-import com.example.Tuan8.model.Role;
-import com.example.Tuan8.repository.RoleRepo;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.Tuan8.dto.RoleDTO;
+import com.example.Tuan8.service.RoleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/roles")
 public class RoleController {
     @Autowired
-    private RoleRepo roleRepo;
+    private RoleService roleService;
 
     @GetMapping("/")
-    public List<Role> getRoles() {
-        return roleRepo.findAll();
+    public ResponseEntity<List<RoleDTO>> getRoles(){
+        return ResponseEntity.ok(roleService.findAll());
     }
 
     @GetMapping("/{roleId}")
-    public Role getRole(@PathVariable int roleId) {
-        return roleRepo.findById(roleId).orElseThrow(() -> new EntityNotFoundException("Role not found with id " + roleId ));
+    public ResponseEntity<Optional<RoleDTO>> getRole(@PathVariable int roleId) {
+        return ResponseEntity.ok(roleService.findById(roleId));
     }
 
     @DeleteMapping("/{roleId}")
-    public String deleteRole(@PathVariable int roleId) {
-        roleRepo.deleteById(roleId);
-        return "Delete Role " + roleId;
+    public ResponseEntity<Void> deleteRole(@PathVariable int roleId) {
+        roleService.deleteById(roleId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/")
-    public Role addRole(@RequestBody Role role) {
-        return roleRepo.save(role);
+    public ResponseEntity<RoleDTO> addRole(@RequestBody RoleDTO roleDTO) {
+        return ResponseEntity.ok(roleService.create(roleDTO));
     }
 
     @PutMapping("/")
-    public Role updateRole(@Valid @RequestBody Role data) {
-        Role role = roleRepo.findById(data.getId()).orElseThrow(
-                () -> new EntityNotFoundException("Role not found with id " + data.getId())
-        );
-        if (data.getRoleName() != null) {
-            role.setRoleName(data.getRoleName());
-            role = roleRepo.save(role);
-        }
-        return role;
+    public ResponseEntity<Void> updateRole(@Valid @RequestBody RoleDTO roleDTO) {
+        roleService.updateById(roleDTO);
+        return ResponseEntity.noContent().build();
     }
 
 }

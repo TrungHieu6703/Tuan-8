@@ -29,12 +29,12 @@ public class Role_Permission {
         this.permission = permission;
     }
 
-    public PermissionEnum getPermission() {
-        return permission;
+    public int getId() {
+        return id;
     }
 
-    public void setPermission(PermissionEnum permission) {
-        this.permission = permission;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Role getRole() {
@@ -45,20 +45,11 @@ public class Role_Permission {
         this.role = role;
     }
 
-    public int getId() {
-        return id;
+    public PermissionEnum getPermission() {
+        return permission;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "Role_Permission{" +
-                "id=" + id +
-                ", role=" + role +
-                ", permission=" + permission +
-                '}';
+    public void setPermission(PermissionEnum permission) {
+        this.permission = permission;
     }
 }
