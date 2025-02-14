@@ -10,6 +10,7 @@ import com.example.Tuan8.repository.UserRepo;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Set;
@@ -26,11 +27,14 @@ public class DataInitializer {
     @Autowired
     private  PasswordEncoder passwordEncoder;
 
+    @Value("${role_admin}")
+    private String role_admin;
+
     @PostConstruct
     public void init() {
-        if (roleRepository.findByRoleName("ROLE_ADMIN").isEmpty()) {
+        if (roleRepository.findByRoleName(role_admin).isEmpty()) {
             Role adminRole = new Role();
-            adminRole.setRoleName("ROLE_ADMIN");
+            adminRole.setRoleName(role_admin);
             roleRepository.save(adminRole);
             Set<PermissionEnum> permissions = Set.of(
                     PermissionEnum.CREATE,
@@ -53,7 +57,7 @@ public class DataInitializer {
             adminUser.setRole(adminRole);
             userRepository.save(adminUser);
 
-            System.out.println("✅ username: admin && password: admin123");
+            System.out.println("✅ username: admin && password: admin123. Please login and change your information");
         }
     }
 }
