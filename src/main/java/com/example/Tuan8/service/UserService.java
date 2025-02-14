@@ -81,7 +81,7 @@ public class UserService {
 
         String roleName = role.getRoleName();
 
-        if (!isAdmin() && "ADMIN".equalsIgnoreCase(roleName)) {
+        if (!isAdmin() && role_admin.equalsIgnoreCase(roleName)) {
             throw new RuntimeException("Can't update user with admin role");
         }
 

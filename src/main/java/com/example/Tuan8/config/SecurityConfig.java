@@ -28,12 +28,13 @@ public class SecurityConfig {
     @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/accounts/login", "/test/**").permitAll()
+                .requestMatchers("/api/v1/auth/login", "/test/**", "api/v1/auth/change-password/**", "api/v1/auth/refreshtoken", "api/v1/auth/sendmail").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/**").hasAuthority("CREATE")
                 .requestMatchers(HttpMethod.PATCH, "/api/v1/users/**").hasAuthority( "UPDATE")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAuthority( "DELETE")

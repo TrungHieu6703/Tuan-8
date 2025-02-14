@@ -1,11 +1,13 @@
 package com.example.Tuan8.filter;
 
+import com.example.Tuan8.service.InMemoryTokenBlacklist;
 import com.example.Tuan8.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,33 +26,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private InMemoryTokenBlacklist blacklist;
+
+    @Value("${sharedSecret}")
+    private String sharedSecretKey;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jwt = getJwtFromRequest(request);
+            String token = jwtService.getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && jwtService.validateToken(jwt)) {
-                String username = jwtService.getUsernameFromToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if(userDetails != null) {
-                    UsernamePasswordAuthenticationToken
-                            authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (token != null && !blacklist.isBlacklisted(token)) {
+                if (StringUtils.hasText(token) && jwtService.validateToken(token, sharedSecretKey)) {
+                    String username = jwtService.getUsernameFromToken(token);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    if(userDetails != null) {
+                        UsernamePasswordAuthenticationToken
+                                authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
+                filterChain.doFilter(request, response);
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
         } catch (Exception ex) {
-            System.out.println("User không tồn tại!" + ex);
+            ex.getStackTrace();
+        } finally {
+            filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
-    }
-
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        // Kiểm tra xem header Authorization có chứa thông tin jwt không
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
     }
 }
