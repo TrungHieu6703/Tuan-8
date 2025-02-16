@@ -8,6 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -61,6 +62,11 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
+
+    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
+    public ErrorResponse handleForbiden(HttpClientErrorException.Forbidden e){
+        return new ErrorResponse(HttpStatus.FORBIDDEN.value(), e.getMessage());
+    }
 
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleException(Exception e) {

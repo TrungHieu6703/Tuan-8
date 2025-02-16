@@ -16,7 +16,7 @@ public class Role {
     @NotBlank(message = "Role name cannot be blank")
     private String roleName;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     private Set<User> users;
 
     @OneToMany(mappedBy = "role")

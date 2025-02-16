@@ -4,6 +4,7 @@ import com.example.Tuan8.dto.RoleDTO;
 import com.example.Tuan8.service.RoleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class RoleController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/" ,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RoleDTO> addRole(@RequestBody RoleDTO roleDTO) {
         return ResponseEntity.ok(roleService.create(roleDTO));
     }
