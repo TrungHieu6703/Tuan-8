@@ -1,9 +1,9 @@
 package com.example.Tuan8.service;
 
 import com.example.Tuan8.dto.UserDTO;
-import com.example.Tuan8.model.Role;
+import com.example.Tuan8.model.Department;
 import com.example.Tuan8.model.User;
-import com.example.Tuan8.repository.RoleRepo;
+import com.example.Tuan8.repository.DepartmentRepo;
 import com.example.Tuan8.repository.UserRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     @Autowired
-    private RoleRepo roleRepo;
+    private DepartmentRepo departmentRepo;
 
     @Autowired
     private UserRepo userRepo;
@@ -74,15 +74,15 @@ public class UserService {
             ReflectionUtils.setField(field, finalUser, value);
         });
 
-        Role role = user.getRole();
-        if (role == null) {
-            throw new RuntimeException("User does not have a valid role");
+        Department department = user.getDepartment();
+        if (department == null) {
+            throw new RuntimeException("User does not have a valid department");
         }
 
-        String roleName = role.getRoleName();
+        String roleName = department.getRoleName();
 
         if (!isAdmin() && role_admin.equalsIgnoreCase(roleName)) {
-            throw new RuntimeException("Can't update user with admin role");
+            throw new RuntimeException("Can't update user with admin department");
         }
 
         user = userRepo.save(user);
@@ -95,7 +95,7 @@ public class UserService {
         userDTO.setUsername(user.getUsername());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
-        userDTO.setRoleId(user.getRole().getId());
+        userDTO.setRoleId(user.getDepartment().getId());
         return userDTO;
     }
 
@@ -104,7 +104,7 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRole(roleRepo.findById(userDTO.getRoleId()).orElseThrow(
+        user.setDepartment(departmentRepo.findById(userDTO.getRoleId()).orElseThrow(
                 () -> new EntityNotFoundException("User not found with id " + userDTO.getRoleId())
         ));
         return user;

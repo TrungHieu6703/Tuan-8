@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,10 +22,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleBlank(ConstraintViolationException e){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getConstraintViolations().iterator().next().getMessage());
     }
-//    @ExceptionHandler(BadCredentialsException.class)
-//    public ErrorResponse handleBadCredentials(BadCredentialsException e){
-//        return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
-//    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ErrorResponse handleBadCredentials(BadCredentialsException e){
+        return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorResponse handleEntityNotFound(EntityNotFoundException e){
@@ -51,13 +52,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException e) {
         String message = e.getMostSpecificCause().getMessage();
-        // Nhập trùng role
-        if (message.contains("role.UKiubw515ff0ugtm28p8g3myt0h")) {
-            return new ErrorResponse(HttpStatus.CONFLICT.value(), "role name already exists!");
+        // Nhập trùng department
+        if (message.contains("department.UKiubw515ff0ugtm28p8g3myt0h")) {
+            return new ErrorResponse(HttpStatus.CONFLICT.value(), "department name already exists!");
         }
         // Nhập trùng permission
         else if (message.contains("role_permission.UK4v9rc4dhd2u79uyr9grgnx07m")){
-            return new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), "role already has this permission!");
+            return new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), "department already has this permission!");
         }
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }

@@ -1,9 +1,9 @@
 package com.example.Tuan8.service;
 
-import com.example.Tuan8.model.Role;
-import com.example.Tuan8.model.Role_Permission;
+import com.example.Tuan8.model.Department;
+import com.example.Tuan8.model.Department_Permission;
 import com.example.Tuan8.model.User;
-import com.example.Tuan8.repository.Role_PermissionRepo;
+import com.example.Tuan8.repository.Department_PermissionRepo;
 import com.example.Tuan8.repository.UserRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +23,27 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private UserRepo userRepo;
 
     @Autowired
-    private Role_PermissionRepo rolePermissionRepo;
+    private Department_PermissionRepo rolePermissionRepo;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findByUsername(username)
                 .orElseThrow(()-> new EntityNotFoundException("User not found"));
-        Role role = user.getRole();
+        Department department = user.getDepartment();
 
-        List<Role_Permission> rolePermissions = rolePermissionRepo.findByRoleId(role.getId());
+        List<Department_Permission> rolePermissions = rolePermissionRepo.findByDepartmentId(department.getId());
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-
-        grantedAuthorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + department.getRoleName()));
+        System.out.println(department.getRoleName());
 
         rolePermissions.forEach(item ->
                 grantedAuthorities.add(new SimpleGrantedAuthority(item.getPermission().toString()))
         );
+
+        grantedAuthorities.forEach(grantedAuthority ->
+                        System.out.println(grantedAuthority.getAuthority())
+                );
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())

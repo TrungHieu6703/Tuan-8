@@ -1,11 +1,11 @@
 package com.example.Tuan8;
 
 import com.example.Tuan8.enums.PermissionEnum;
-import com.example.Tuan8.model.Role;
-import com.example.Tuan8.model.Role_Permission;
+import com.example.Tuan8.model.Department;
+import com.example.Tuan8.model.Department_Permission;
 import com.example.Tuan8.model.User;
-import com.example.Tuan8.repository.RoleRepo;
-import com.example.Tuan8.repository.Role_PermissionRepo;
+import com.example.Tuan8.repository.DepartmentRepo;
+import com.example.Tuan8.repository.Department_PermissionRepo;
 import com.example.Tuan8.repository.UserRepo;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class DataInitializer {
     @Autowired
-    private  RoleRepo roleRepository;
+    private DepartmentRepo departmentRepository;
     @Autowired
     private  UserRepo userRepository;
     @Autowired
-    private Role_PermissionRepo rolePermissionRepo;
+    private Department_PermissionRepo rolePermissionRepo;
     @Autowired
     private  PasswordEncoder passwordEncoder;
 
@@ -32,10 +32,10 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        if (roleRepository.findByRoleName(role_admin).isEmpty()) {
-            Role adminRole = new Role();
-            adminRole.setRoleName(role_admin);
-            roleRepository.save(adminRole);
+        if (departmentRepository.findByRoleName(role_admin).isEmpty()) {
+            Department adminDepartment = new Department();
+            adminDepartment.setRoleName(role_admin);
+            departmentRepository.save(adminDepartment);
             Set<PermissionEnum> permissions = Set.of(
                     PermissionEnum.CREATE,
                     PermissionEnum.READ,
@@ -43,8 +43,8 @@ public class DataInitializer {
                     PermissionEnum.DELETE
             );
             for (PermissionEnum permission : permissions) {
-                Role_Permission rolePermission = new Role_Permission();
-                rolePermission.setRole(adminRole);
+                Department_Permission rolePermission = new Department_Permission();
+                rolePermission.setDepartment(adminDepartment);
                 rolePermission.setPermission(permission);
                 rolePermissionRepo.save(rolePermission);
             }
@@ -54,7 +54,7 @@ public class DataInitializer {
             adminUser.setFullName("Administrator");
             adminUser.setEmail("admin@example.com");
             adminUser.setPassword(passwordEncoder.encode("admin123"));
-            adminUser.setRole(adminRole);
+            adminUser.setDepartment(adminDepartment);
             userRepository.save(adminUser);
 
             System.out.println("✅ username: admin && password: admin123. Please login and change your information");

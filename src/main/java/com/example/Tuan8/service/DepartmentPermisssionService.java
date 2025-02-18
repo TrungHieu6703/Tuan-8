@@ -1,18 +1,18 @@
 package com.example.Tuan8.service;
 
-import com.example.Tuan8.dto.Role_PermissionDTO;
-import com.example.Tuan8.model.Role_Permission;
-import com.example.Tuan8.repository.RoleRepo;
-import com.example.Tuan8.repository.Role_PermissionRepo;
+import com.example.Tuan8.dto.Department_PermissionDTO;
+import com.example.Tuan8.model.Department_Permission;
+import com.example.Tuan8.repository.DepartmentRepo;
+import com.example.Tuan8.repository.Department_PermissionRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RolePermisssionService {
+public class DepartmentPermisssionService {
     @Autowired
-    private Role_PermissionRepo role_permissionRepo;
-    private RoleRepo roleRepo;
+    private Department_PermissionRepo department_permissionRepo;
+    private DepartmentRepo departmentRepo;
 
 //
 //    public List<Role_PermissionDTO> findAll() {
@@ -29,14 +29,14 @@ public class RolePermisssionService {
 //    }
 
     public void deleteById(int id) {
-        role_permissionRepo.deleteById(id);
+        department_permissionRepo.deleteById(id);
     }
 
-    public Role_PermissionDTO create(Role_PermissionDTO Role_PermissionDTO) {
-        Role_Permission Role_Permission = new Role_Permission();
-        mapToEntity(Role_PermissionDTO, Role_Permission);
-        role_permissionRepo.save(Role_Permission);
-        return mapToDTO(Role_Permission, new Role_PermissionDTO());
+    public Department_PermissionDTO create(Department_PermissionDTO Department_PermissionDTO) {
+        Department_Permission Department_Permission = new Department_Permission();
+        mapToEntity(Department_PermissionDTO, Department_Permission);
+        department_permissionRepo.save(Department_Permission);
+        return mapToDTO(Department_Permission, new Department_PermissionDTO());
     }
 
 //    public void updateById(Role_PermissionDTO Role_PermissionDTO) {
@@ -47,16 +47,16 @@ public class RolePermisssionService {
 //        role_permissionRepo.save(Role_Permission);
 //    }
 
-    private Role_PermissionDTO mapToDTO(Role_Permission rolePermission, Role_PermissionDTO rolePermissionDTO){
+    private Department_PermissionDTO mapToDTO(Department_Permission rolePermission, Department_PermissionDTO rolePermissionDTO){
         rolePermissionDTO.setRole_id(rolePermission.getId());
         rolePermissionDTO.setPermission(rolePermission.getPermission());
         return rolePermissionDTO;
     }
 
-    private Role_Permission mapToEntity(Role_PermissionDTO rolePermissionDTO, Role_Permission rolePermission){
+    private Department_Permission mapToEntity(Department_PermissionDTO rolePermissionDTO, Department_Permission rolePermission){
         rolePermission.setId(rolePermissionDTO.getId());
-        rolePermission.setRole(roleRepo.findById(rolePermissionDTO.getRole_id()).orElseThrow(
-                ()-> new EntityNotFoundException("role not found")
+        rolePermission.setDepartment(departmentRepo.findById(rolePermissionDTO.getRole_id()).orElseThrow(
+                ()-> new EntityNotFoundException("department not found")
         ));
         rolePermission.setPermission(rolePermissionDTO.getPermission());
         return rolePermission;

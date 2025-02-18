@@ -47,9 +47,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/api/v1/users/**").hasAuthority( "UPDATE")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAuthority( "DELETE")
                 .requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasAuthority("READ")
-
-                .requestMatchers("/api/v1/roles/**").hasRole(role_admin)
-                .requestMatchers("/api/v1/role_permissions/**").hasRole(role_admin)
+                /// role_admin = "ADMIN"
+                .requestMatchers("/api/v1/departments/**").hasRole(role_admin)
+                .requestMatchers("/api/v1/department_permissions/**").hasRole(role_admin)
 
                 .anyRequest().authenticated()
         );

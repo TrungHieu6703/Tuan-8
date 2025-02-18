@@ -4,6 +4,7 @@ import com.example.Tuan8.dto.UserDTO;
 import com.example.Tuan8.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(userId));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(userService.create(userDTO));
