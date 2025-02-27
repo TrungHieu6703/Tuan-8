@@ -47,4 +47,9 @@ public class AuthController {
     public ResponseEntity<?> changePassword(HttpServletRequest request, @RequestBody PasswordDTO passwordDTO) {
         return authService.changePassword(request, passwordDTO);
     }
+
+    @GetMapping("/hello")
+    public ResponseEntity<?> hello(){
+        return authService.hello();
+    }
 }

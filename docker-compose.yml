@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0.41-debian
+    container_name: mysql_tuan8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: Tuan8
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    image: lonelystonie/spring-app3:latest
+    container_name: tuan8_spring
+    depends_on:
+      - mysql
+    environment: 
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/Tuan8?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: my-secret-pw
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:

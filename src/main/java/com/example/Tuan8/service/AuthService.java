@@ -144,4 +144,8 @@ public class AuthService {
 
         return ResponseEntity.ok("Password changed successfully");
     }
+
+    public ResponseEntity<?> hello() {
+        return ResponseEntity.ok("Hello Spring");
+    }
 }
